@@ -1,0 +1,11 @@
+{
+  "name": "final-daily-inspiration-node",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serverless-http": "^2.7.0",
+    "aws-sdk": "^2.1273.0"
+  }
+}
