@@ -35,7 +35,7 @@ provider:
     SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
     USERS_TABLE: ${self:custom.tableName}
     REGION: ${self:provider.region}
-    SNS_TOPIC_ARN: arn:aws:sns:us-east-1:934827452929:quotes-messages-dev
+    SNS_TOPIC_ARN: ${env:SNS_TOPIC_ARN}
     SNS_EMAIL_ENDPOINT: ${env:SNS_EMAIL_ENDPOINT}
 
 package:
