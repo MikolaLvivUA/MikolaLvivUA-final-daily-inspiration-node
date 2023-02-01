@@ -1,5 +1,6 @@
 service: final-daily-inspiration-node
 frameworkVersion: '3'
+useDotenv: true
 
 custom:
   tableName: 'users-table-${sls:stage}'
@@ -15,6 +16,9 @@ provider:
     role:
       statements:
         - Effect: Allow
+          Action: SNS:Publish
+          Resource: !Ref QuotesMessages
+        - Effect: Allow
           Action: "s3:*"
           Resource: "*"
         - Effect: Allow
@@ -28,8 +32,15 @@ provider:
           Resource:
             - Fn::GetAtt: [ UsersTable, Arn ]
   environment:
+    SENDGRID_API_KEY: "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"
     USERS_TABLE: ${self:custom.tableName}
     REGION: ${self:provider.region}
+    SNS_TOPIC_ARN: arn:aws:sns:us-east-1:934827452929:quotes-messages-dev
+    SNS_EMAIL_ENDPOINT: ${env:SNS_EMAIL_ENDPOINT}
+
+package:
+  patterns:
+    - '!front-end/**'
 
 functions:
   quotes:
@@ -46,9 +57,51 @@ functions:
           path: subscribe
           method: post
           cors: true
+  staticMailer:
+    handler: handlers/staticMailer.staticMailer
+    events:
+      - http:
+          path: static-mailer
+          method: post
+          cors: true
+  sendEmail:
+    handler: handlers/sendEmail.sendEmail
+    events:
+      - http:
+          path: send-email
+          method: post
+          cors: true
+      - schedule: cron(0 13 * * ? *)
+  getSubscribers:
+    handler: handlers/getSubscribers.getSubscribers
+    events:
+      - http:
+          path: subscribers
+          method: get
+          cors: true
 
 resources:
   Resources:
+    #SNS
+    QuotesMessages:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: quotes-messages-${self:provider.stage}
+    QuotesMessagesSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref QuotesMessages
+        Protocol: email
+        Endpoint:  ${self:environment.SNS_EMAIL_ENDPOINT}
+        DeliveryPolicy:
+          healthyRetryPolicy:
+            numRetries: 20
+            minDelayTarget: 30
+            maxDelayTarget: 600
+            backoffFunction: exponential
+
+
+
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:

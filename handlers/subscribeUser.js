@@ -10,6 +10,7 @@ export const subscribeUser = async (event, context) => {
     try {
         const data = JSON.parse(event.body);
         console.log("EVENT:::", data);
+        console.log("EMAIL:::", data.email)
 
         const timestamp = new Date().getTime()
 
@@ -37,7 +38,9 @@ export const subscribeUser = async (event, context) => {
         }
 
     } catch (error) {
-        console.error(error.message);
-        return new Error(error.message)
+        return {
+            statusCode: 500,
+            body: JSON.stringify({error: error.message})
+        }
     }
 }

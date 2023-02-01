@@ -1,10 +1,10 @@
-import AWS from 'aws-sdk';
+import AWS from "aws-sdk";
 
 AWS.config.update({region: process.env.REGION})
 
 const s3 = new AWS.S3()
 
-export const getQuotes = async (event, context) => {
+export const getQuotes = async (event) => {
     try {
         console.log("Incoming:::", event);
 
@@ -30,8 +30,10 @@ export const getQuotes = async (event, context) => {
         }
 
     } catch (error) {
-        console.error(error.message);
-        return new Error(error.message)
+        return {
+            statusCode: 500,
+            body: JSON.stringify({error: error.message})
+        }
     }
 
 }

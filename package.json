@@ -4,7 +4,9 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "aws-sdk": "^2.1273.0",
+    "axios": "^1.2.2",
     "express": "^4.17.1",
     "serverless-http": "^2.7.0",
     "uuid": "^9.0.0"
