@@ -32,7 +32,7 @@ provider:
           Resource:
             - Fn::GetAtt: [ UsersTable, Arn ]
   environment:
-    SENDGRID_API_KEY: "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"
+    SENDGRID_API_KEY: ${env:SENDGRID_API_KEY}
     USERS_TABLE: ${self:custom.tableName}
     REGION: ${self:provider.region}
     SNS_TOPIC_ARN: arn:aws:sns:us-east-1:934827452929:quotes-messages-dev

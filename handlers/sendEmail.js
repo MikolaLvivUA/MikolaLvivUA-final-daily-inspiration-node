@@ -14,7 +14,7 @@ export const sendEmail = async (event) => {
     try {
         const result = await sendgrid.sendMultiple({
             to: subs,
-            from: "mikola.shidlovsky@gmail.com",
+            from: process.env.SNS_EMAIL_ENDPOINT,
             subject: `[Daily Words of Wisdom]`,
             text: "Get Inspired Today",
             html: emailHTML,
